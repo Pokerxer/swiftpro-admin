@@ -23,16 +23,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const { isAuthenticated, user, logout, hydrate } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     hydrate();
+    setHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (!isAuthenticated && !pathname.includes('/login')) {
+    if (hydrated && !isAuthenticated && !pathname.includes('/login')) {
       router.push('/login');
     }
-  }, [isAuthenticated, pathname, router]);
+  }, [hydrated, isAuthenticated, pathname, router]);
 
   if (pathname === '/login') {
     return <>{children}</>;
