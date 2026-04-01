@@ -1,0 +1,190 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useAuthStore } from '@/store/auth';
+import Link from 'next/link';
+import { LayoutDashboard, FileText, Briefcase, Users, MessageSquare, BarChart3, LogOut, Menu, Wrench, Star, UserCog, Layout } from 'lucide-react';
+
+const menuItems = [
+  { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/hero', label: 'Hero Section', icon: Layout },
+  { href: '/admin/services', label: 'Services', icon: Wrench },
+  { href: '/admin/projects', label: 'Projects', icon: Briefcase },
+  { href: '/admin/posts', label: 'Blog Posts', icon: FileText },
+  { href: '/admin/team', label: 'Team Members', icon: Users },
+  { href: '/admin/testimonials', label: 'Testimonials', icon: Star },
+  { href: '/admin/stats', label: 'Stats', icon: BarChart3 },
+  { href: '/admin/users', label: 'Users & Roles', icon: UserCog },
+];
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { isAuthenticated, user, logout, hydrate } = useAuthStore();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  useEffect(() => {
+    hydrate();
+  }, []);
+
+  useEffect(() => {
+    if (!isAuthenticated && !pathname.includes('/login')) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, pathname, router]);
+
+  if (pathname === '/login') {
+    return <>{children}</>;
+  }
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
+
+  const initials = (name: string) =>
+    name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+
+  return (
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
+      <aside style={{
+        width: '260px',
+        background: '#0A2463',
+        color: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'fixed',
+        height: '100vh',
+        zIndex: 100,
+        transition: 'transform 0.3s ease'
+      }}
+        className={sidebarOpen ? 'sidebar-open' : ''}
+      >
+        {/* Logo */}
+        <div style={{ padding: '1.5rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+          <img
+            src="/logo.svg"
+            alt="SwiftPro"
+            style={{ height: '54px', width: 'auto' }}
+          />
+        </div>
+
+        {/* Nav */}
+        <nav style={{ flex: 1, padding: '1rem 0', overflowY: 'auto' }}>
+          {menuItems.map((item) => {
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setSidebarOpen(false)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.875rem',
+                  padding: '0.875rem 1.5rem',
+                  color: active ? 'white' : 'rgba(255,255,255,0.65)',
+                  background: active ? 'rgba(255,255,255,0.12)' : 'transparent',
+                  fontWeight: active ? 600 : 400,
+                  fontSize: '0.9rem',
+                  borderLeft: `4px solid ${active ? '#3A86FF' : 'transparent'}`,
+                  transition: 'all 0.2s ease',
+                  textDecoration: 'none',
+                }}
+              >
+                <item.icon size={20} />
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* User + Logout */}
+        <div style={{ padding: '1.25rem 1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          {user && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', marginBottom: '0.875rem' }}>
+              <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#3A86FF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 700, flexShrink: 0 }}>
+                {initials(user.username || user.email)}
+              </div>
+              <div style={{ overflow: 'hidden' }}>
+                <p style={{ fontSize: '0.85rem', fontWeight: 600, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{user.username}</p>
+                <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', margin: 0, textTransform: 'capitalize' }}>{user.role || 'admin'}</p>
+              </div>
+            </div>
+          )}
+          <button
+            onClick={handleLogout}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              width: '100%',
+              padding: '0.75rem 0.875rem',
+              background: 'rgba(255,255,255,0.08)',
+              border: 'none',
+              color: 'rgba(255,255,255,0.7)',
+              cursor: 'pointer',
+              borderRadius: '8px',
+              fontSize: '0.9rem',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            <LogOut size={18} />
+            <span>Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      <div style={{ flex: 1, marginLeft: '260px', background: '#f5f5f5', minHeight: '100vh' }}>
+        <header style={{
+          background: 'white',
+          padding: '1rem 2.5rem',
+          borderBottom: '1px solid #e5e5e5',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          position: 'sticky',
+          top: 0,
+          zIndex: 50
+        }}>
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '0.5rem', display: 'none' }}
+            className="menu-toggle"
+          >
+            <Menu size={22} />
+          </button>
+          <p style={{ fontSize: '0.875rem', color: '#9CA3AF', margin: 0 }}>
+            {menuItems.find(m => m.href === pathname)?.label || 'Dashboard'}
+          </p>
+          {user && (
+            <p style={{ fontSize: '0.85rem', color: '#6B7280', margin: 0 }}>
+              Signed in as <strong style={{ color: '#111' }}>{user.username}</strong>
+              {user.role && <span style={{ marginLeft: '0.5rem', background: user.role === 'admin' ? '#EFF6FF' : '#F3F4F6', color: user.role === 'admin' ? '#3B82F6' : '#6B7280', padding: '3px 10px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, textTransform: 'capitalize' }}>{user.role}</span>}
+            </p>
+          )}
+        </header>
+        <div style={{ padding: '2.5rem' }}>
+          {children}
+        </div>
+      </div>
+
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 99 }}
+        />
+      )}
+
+      <style>{`
+        @media (max-width: 768px) {
+          aside { transform: translateX(-100%); }
+          aside.sidebar-open { transform: translateX(0) !important; }
+          .menu-toggle { display: block !important; }
+          div[style*="marginLeft: 260px"] { margin-left: 0 !important; }
+        }
+      `}</style>
+    </div>
+  );
+}
