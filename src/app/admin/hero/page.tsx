@@ -102,7 +102,8 @@ export default function HeroPage() {
   const fetchSlides = async () => {
     try {
       const res = await heroAPI.get();
-      const data: HeroSlide[] = res.data.length > 0 ? res.data : [{ ...EMPTY_SLIDE }];
+      const heroData = res.data;
+      const data: HeroSlide[] = heroData.slides?.length > 0 ? heroData.slides : [{ ...EMPTY_SLIDE }];
       setSlides(data.sort((a,b) => a.order - b.order));
     } catch { setSlides([{ ...EMPTY_SLIDE }]); }
     finally { setLoading(false); setDirty(false); }
