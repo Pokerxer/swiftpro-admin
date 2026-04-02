@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import Link from 'next/link';
-import { LayoutDashboard, FileText, Briefcase, Users, MessageSquare, BarChart3, LogOut, Menu, Wrench, Star, UserCog, Layout } from 'lucide-react';
+import { LayoutDashboard, FileText, Briefcase, Users, MessageSquare, BarChart3, LogOut, Menu, Wrench, Star, UserCog, Layout, X } from 'lucide-react';
 
 const menuItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -29,6 +29,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     hydrate();
     setHydrated(true);
   }, []);
+
+  // Prevent body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (typeof window !== 'undefined' && sidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [sidebarOpen]);
 
   useEffect(() => {
     if (hydrated && !isAuthenticated && !pathname.includes('/login')) {
@@ -55,17 +67,34 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}
         style={{}}
       >
-        {/* Logo */}
-        <div style={{ padding: '1.5rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        {/* Header with Logo + Close Button */}
+        <div style={{ padding: '1.5rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <img
             src="/logo.svg"
             alt="SwiftPro"
             style={{ height: '54px', width: 'auto' }}
           />
+          <button
+            onClick={() => setSidebarOpen(false)}
+            className="sidebar-close-btn"
+            style={{
+              background: 'rgba(255,255,255,0.1)',
+              border: 'none',
+              color: 'white',
+              cursor: 'pointer',
+              padding: '0.5rem',
+              borderRadius: '8px',
+              display: 'none',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <X size={22} />
+          </button>
         </div>
 
         {/* Nav */}
-        <nav style={{ flex: 1, padding: '1rem 0', overflowY: 'auto' }}>
+        <nav style={{ flex: 1, padding: '0.5rem 0', overflowY: 'auto' }}>
           {menuItems.map((item) => {
             const active = pathname === item.href;
             return (
