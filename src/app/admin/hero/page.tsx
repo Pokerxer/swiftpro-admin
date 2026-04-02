@@ -198,9 +198,9 @@ export default function HeroPage() {
   return (
     <div>
       {/* Header */}
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'2rem', flexWrap:'wrap', gap:'1rem' }}>
-        <div style={{ display:'flex', alignItems:'center', gap:'1rem' }}>
-          <div style={{ width:48, height:48, borderRadius:'14px', background:`linear-gradient(135deg, ${BRAND} 0%, ${ACCENT} 100%)`, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 4px 12px rgba(10,36,99,0.25)' }}>
+      <div className="page-header">
+        <div className="title-section">
+          <div className="title-icon" style={{ background: `linear-gradient(135deg, ${BRAND} 0%, ${ACCENT} 100%)` }}>
             <Layout size={24} color="white" />
           </div>
           <div>
@@ -211,9 +211,9 @@ export default function HeroPage() {
             </p>
           </div>
         </div>
-        <div style={{ display:'flex', gap:'0.75rem' }}>
-          <button onClick={openNew} style={{ background:'linear-gradient(135deg, #10B981 0%, #059669 100%)', color:'white', border:'none', padding:'0.75rem 1.25rem', borderRadius:'10px', cursor:'pointer', display:'flex', alignItems:'center', gap:'0.5rem', fontWeight:600, fontSize:'0.9rem', boxShadow:'0 2px 8px rgba(16,185,129,0.3)', transition:'all 0.2s' }}>
-            <Plus size={18}/> Add Slide
+        <div className="actions">
+          <button onClick={openNew} className="add-btn" style={{ background:'linear-gradient(135deg, #10B981 0%, #059669 100%)', color:'white', border:'none', padding:'0.75rem 1.25rem', borderRadius:'10px', cursor:'pointer', display:'flex', alignItems:'center', gap:'0.5rem', fontWeight:600, fontSize:'0.9rem', boxShadow:'0 2px 8px rgba(16,185,129,0.3)', transition:'all 0.2s' }}>
+            <Plus size={18}/> <span>Add Slide</span>
           </button>
           <button onClick={saveAll} disabled={saving||!dirty} style={{ background: dirty ? `linear-gradient(135deg, ${BRAND} 0%, ${ACCENT} 100%)` : '#9CA3AF', color:'white', border:'none', padding:'0.75rem 1.5rem', borderRadius:'10px', cursor: dirty&&!saving?'pointer':'default', display:'flex', alignItems:'center', gap:'0.5rem', fontWeight:600, fontSize:'0.9rem', transition:'all 0.2s', boxShadow: dirty ? '0 2px 8px rgba(10,36,99,0.25)' : 'none' }}>
             <Save size={18}/> {saving ? 'Saving…' : 'Save All'}
@@ -234,7 +234,7 @@ export default function HeroPage() {
           </button>
         </div>
       ) : (
-        <div style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
+        <div className="hero-slides-grid">
           {slides.map((slide, idx) => {
             const previewIcons = slide.features.slice(0,3).map(f => ICON_MAP[f.icon] || Code);
             return (

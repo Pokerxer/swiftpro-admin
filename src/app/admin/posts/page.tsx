@@ -177,13 +177,13 @@ export default function PostsPage() {
       <main style={{ padding: '2rem', maxWidth: '1100px', margin: '0 auto' }}>
 
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <div className="page-header" style={{ marginBottom: '1.5rem' }}>
           <div>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: BRAND }}>Blog Posts</h1>
             <p style={{ color: '#6B7280', fontSize: '0.875rem' }}>{posts.length} post{posts.length !== 1 ? 's' : ''} total</p>
           </div>
-          <button onClick={openCreate} style={{ background: BRAND, color: 'white', border: 'none', padding: '0.75rem 1.25rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.9rem' }}>
-            <Plus size={18} /> New Post
+          <button onClick={openCreate} className="add-btn" style={{ background: BRAND, color: 'white', border: 'none', padding: '0.75rem 1.25rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.9rem' }}>
+            <Plus size={18} /> <span>New Post</span>
           </button>
         </div>
 
@@ -202,7 +202,7 @@ export default function PostsPage() {
 
         {/* List */}
         {loading ? <Skeleton /> : (
-          <div style={{ display: 'grid', gap: '1rem' }}>
+          <div className="posts-list">
             {filtered.length === 0 && (
               <div style={{ background: 'white', borderRadius: '12px', padding: '3rem', textAlign: 'center', color: '#9CA3AF' }}>
                 <FileText size={40} style={{ margin: '0 auto 1rem', display: 'block' }} />
