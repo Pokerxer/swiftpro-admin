@@ -47,9 +47,9 @@ function slugify(s: string) {
 function Toast({ msg, type, onClose }: { msg: string; type: 'success' | 'error'; onClose: () => void }) {
   useEffect(() => { const t = setTimeout(onClose, 3500); return () => clearTimeout(t); }, [onClose]);
   return (
-    <div style={{ position: 'fixed', bottom: '2rem', right: '2rem', background: type === 'success' ? '#10B981' : '#E63946', color: 'white', padding: '0.875rem 1.25rem', borderRadius: '10px', boxShadow: '0 4px 20px rgba(0,0,0,0.2)', zIndex: 9999, display: 'flex', alignItems: 'center', gap: '0.75rem', minWidth: '260px' }}>
-      <span style={{ flex: 1, fontSize: '0.9rem', fontWeight: 500 }}>{msg}</span>
-      <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 0 }}><X size={16} /></button>
+    <div style={{ position: 'fixed', bottom: '1rem', left: '1rem', right: '1rem', background: type === 'success' ? '#10B981' : '#E63946', color: 'white', padding: '0.875rem 1rem', borderRadius: '10px', boxShadow: '0 4px 20px rgba(0,0,0,0.2)', zIndex: 9999, display: 'flex', alignItems: 'center', gap: '0.75rem', maxWidth: '320px' }} className="toast-notification">
+      <span style={{ flex: 1, fontSize: '0.85rem', fontWeight: 500 }}>{msg}</span>
+      <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', padding: 0, flexShrink: 0 }}><X size={16} /></button>
     </div>
   );
 }
@@ -174,28 +174,28 @@ export default function PostsPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f5f5f5' }}>
-      <main style={{ padding: '2rem', maxWidth: '1100px', margin: '0 auto' }}>
+      <main style={{ padding: '2rem 1rem', maxWidth: '1100px', margin: '0 auto' }}>
 
         {/* Header */}
-        <div className="page-header" style={{ marginBottom: '1.5rem' }}>
+        <div className="page-header" style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: BRAND }}>Blog Posts</h1>
             <p style={{ color: '#6B7280', fontSize: '0.875rem' }}>{posts.length} post{posts.length !== 1 ? 's' : ''} total</p>
           </div>
-          <button onClick={openCreate} className="add-btn" style={{ background: BRAND, color: 'white', border: 'none', padding: '0.75rem 1.25rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.9rem' }}>
-            <Plus size={18} /> <span>New Post</span>
+          <button onClick={openCreate} className="add-btn" style={{ background: BRAND, color: 'white', border: 'none', padding: '0.75rem 1.25rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.9rem', whiteSpace: 'nowrap' }}>
+            <Plus size={18} /> <span className="btn-text">New Post</span>
           </button>
         </div>
 
         {/* Filters */}
-        <div style={{ background: 'white', borderRadius: '12px', padding: '1rem 1.25rem', marginBottom: '1.25rem', display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+        <div style={{ background: 'white', borderRadius: '12px', padding: '1rem', marginBottom: '1.25rem', display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
           <div style={{ flex: 1, minWidth: 200, position: 'relative' }}>
             <Search size={16} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} />
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search by title or author..." style={{ ...inputStyle, paddingLeft: '2.25rem', width: '100%' }} />
           </div>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
             {(['all', 'published', 'draft'] as const).map(s => (
-              <button key={s} onClick={() => setStatusFilter(s)} style={{ padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid', borderColor: statusFilter === s ? BRAND : '#ddd', background: statusFilter === s ? BRAND : 'white', color: statusFilter === s ? 'white' : '#374151', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 500, textTransform: 'capitalize' }}>{s}</button>
+              <button key={s} onClick={() => setStatusFilter(s)} style={{ padding: '0.5rem 0.75rem', borderRadius: '6px', border: '1px solid', borderColor: statusFilter === s ? BRAND : '#ddd', background: statusFilter === s ? BRAND : 'white', color: statusFilter === s ? 'white' : '#374151', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 500, textTransform: 'capitalize' }}>{s}</button>
             ))}
           </div>
         </div>
@@ -210,34 +210,36 @@ export default function PostsPage() {
               </div>
             )}
             {filtered.map(post => (
-              <div key={post._id} style={{ background: 'white', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.07)', display: 'flex', gap: '1.25rem', alignItems: 'flex-start', padding: '1.25rem', transition: 'box-shadow 0.2s' }}>
+              <div key={post._id} style={{ background: 'white', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.07)', display: 'flex', gap: '1rem', alignItems: 'flex-start', padding: '1rem', transition: 'box-shadow 0.2s', flexWrap: 'wrap' }}>
                 {/* Thumbnail */}
-                <div style={{ width: 88, height: 72, borderRadius: '8px', overflow: 'hidden', flexShrink: 0, background: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {post.image ? <img src={post.image} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <FileText size={28} style={{ color: '#9CA3AF' }} />}
+                <div style={{ width: 80, height: 64, borderRadius: '8px', overflow: 'hidden', flexShrink: 0, background: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {post.image ? <img src={post.image} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <FileText size={24} style={{ color: '#9CA3AF' }} />}
                 </div>
                 {/* Info */}
-                <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ flex: 1, minWidth: '60%' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
-                    <h3 style={{ fontWeight: 700, fontSize: '1rem', color: '#111', margin: 0 }}>{post.title}</h3>
-                    {post.category && <span style={{ fontSize: '0.72rem', fontWeight: 600, padding: '2px 8px', borderRadius: '4px', background: `${catColors[post.category] || '#6B7280'}20`, color: catColors[post.category] || '#6B7280' }}>{post.category}</span>}
-                    <span style={{ fontSize: '0.72rem', fontWeight: 600, padding: '2px 8px', borderRadius: '4px', background: post.published ? '#D1FAE5' : '#F3F4F6', color: post.published ? '#059669' : '#6B7280', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <h3 style={{ fontWeight: 700, fontSize: '0.95rem', color: '#111', margin: 0 }}>{post.title}</h3>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                    {post.category && <span style={{ fontSize: '0.7rem', fontWeight: 600, padding: '2px 8px', borderRadius: '4px', background: `${catColors[post.category] || '#6B7280'}20`, color: catColors[post.category] || '#6B7280' }}>{post.category}</span>}
+                    <span style={{ fontSize: '0.7rem', fontWeight: 600, padding: '2px 8px', borderRadius: '4px', background: post.published ? '#D1FAE5' : '#F3F4F6', color: post.published ? '#059669' : '#6B7280', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       {post.published ? <><Eye size={10} /> Published</> : <><EyeOff size={10} /> Draft</>}
                     </span>
                   </div>
-                  {post.excerpt && <p style={{ color: '#6B7280', fontSize: '0.85rem', margin: '0 0 0.5rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{post.excerpt}</p>}
-                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                    {post.author && <span style={{ fontSize: '0.78rem', color: '#9CA3AF', display: 'flex', alignItems: 'center', gap: '4px' }}><User size={12} />{post.author}</span>}
-                    {post.readTime && <span style={{ fontSize: '0.78rem', color: '#9CA3AF', display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={12} />{post.readTime}</span>}
-                    {post.publishedAt && <span style={{ fontSize: '0.78rem', color: '#9CA3AF', display: 'flex', alignItems: 'center', gap: '4px' }}><Calendar size={12} />{new Date(post.publishedAt).toLocaleDateString()}</span>}
+                  {post.excerpt && <p style={{ color: '#6B7280', fontSize: '0.8rem', margin: '0 0 0.5rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{post.excerpt}</p>}
+                  <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    {post.author && <span style={{ fontSize: '0.75rem', color: '#9CA3AF', display: 'flex', alignItems: 'center', gap: '4px' }}><User size={12} />{post.author}</span>}
+                    {post.readTime && <span style={{ fontSize: '0.75rem', color: '#9CA3AF', display: 'flex', alignItems: 'center', gap: '4px' }}><Clock size={12} />{post.readTime}</span>}
+                    {post.publishedAt && <span style={{ fontSize: '0.75rem', color: '#9CA3AF', display: 'flex', alignItems: 'center', gap: '4px' }}><Calendar size={12} />{new Date(post.publishedAt).toLocaleDateString()}</span>}
                   </div>
                   {post.tags && post.tags.length > 0 && (
                     <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
-                      {post.tags.map(tag => <span key={tag} style={{ background: '#EFF6FF', color: '#3B82F6', fontSize: '0.72rem', padding: '2px 8px', borderRadius: '12px', fontWeight: 500 }}>{tag}</span>)}
+                      {post.tags.map(tag => <span key={tag} style={{ background: '#EFF6FF', color: '#3B82F6', fontSize: '0.7rem', padding: '2px 6px', borderRadius: '12px', fontWeight: 500 }}>{tag}</span>)}
                     </div>
                   )}
                 </div>
                 {/* Actions */}
-                <div style={{ display: 'flex', gap: '0.25rem', flexShrink: 0 }}>
+                <div style={{ display: 'flex', gap: '0.25rem', flexShrink: 0, alignSelf: 'center' }}>
                   <button onClick={() => openEdit(post)} style={{ background: '#F3F4F6', border: 'none', cursor: 'pointer', padding: '0.5rem', borderRadius: '6px', color: '#374151', display: 'flex', alignItems: 'center' }}><Edit size={18} /></button>
                   <button onClick={() => setDeleteTarget(post)} style={{ background: '#FEF2F2', border: 'none', cursor: 'pointer', padding: '0.5rem', borderRadius: '6px', color: '#E63946', display: 'flex', alignItems: 'center' }}><Trash2 size={18} /></button>
                 </div>
@@ -272,7 +274,7 @@ export default function PostsPage() {
                 {activeTab === 'meta' && (
                   <div style={{ display: 'grid', gap: '1rem' }}>
                     {/* Title + slug */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }} className="form-row-mobile">
                       <div>
                         <label style={labelStyle}>Title *</label>
                         <input value={formData.title} onChange={e => handleTitleChange(e.target.value)} required placeholder="Post title" style={inputStyle} />
@@ -280,28 +282,28 @@ export default function PostsPage() {
                       <div>
                         <label style={{ ...labelStyle, display: 'flex', justifyContent: 'space-between' }}>
                           <span>Slug</span>
-                          {!slugManual && <span style={{ fontWeight: 400, color: '#10B981', fontSize: '0.75rem' }}>Auto-generated</span>}
+                          {!slugManual && <span style={{ fontWeight: 400, color: '#10B981', fontSize: '0.7rem' }}>Auto</span>}
                         </label>
-                        <input value={formData.slug} onChange={e => { setSlugManual(true); setFormData(f => ({ ...f, slug: e.target.value })); }} placeholder="post-url-slug" style={{ ...inputStyle, fontFamily: 'monospace', fontSize: '0.82rem' }} />
+                        <input value={formData.slug} onChange={e => { setSlugManual(true); setFormData(f => ({ ...f, slug: e.target.value })); }} placeholder="slug" style={{ ...inputStyle, fontFamily: 'monospace', fontSize: '0.8rem' }} />
                       </div>
                     </div>
 
                     {/* Author + Category + ReadTime */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }} className="form-row-mobile">
                       <div>
                         <label style={labelStyle}>Author *</label>
-                        <input value={formData.author} onChange={e => setFormData(f => ({ ...f, author: e.target.value }))} required placeholder="Author name" style={inputStyle} />
+                        <input value={formData.author} onChange={e => setFormData(f => ({ ...f, author: e.target.value }))} required placeholder="Name" style={inputStyle} />
                       </div>
                       <div>
                         <label style={labelStyle}>Category</label>
                         <select value={formData.category} onChange={e => setFormData(f => ({ ...f, category: e.target.value }))} style={{ ...inputStyle, background: 'white' }}>
-                          <option value="">Select category</option>
+                          <option value="">Select</option>
                           {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                         </select>
                       </div>
                       <div>
                         <label style={labelStyle}>Read Time</label>
-                        <input value={formData.readTime} onChange={e => setFormData(f => ({ ...f, readTime: e.target.value }))} placeholder="e.g. 5 min read" style={inputStyle} />
+                        <input value={formData.readTime} onChange={e => setFormData(f => ({ ...f, readTime: e.target.value }))} placeholder="e.g. 5 min" style={inputStyle} />
                       </div>
                     </div>
 
@@ -389,14 +391,14 @@ export default function PostsPage() {
 
       {/* Delete confirmation */}
       {deleteTarget && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div style={{ background: 'white', borderRadius: '16px', padding: '2rem', maxWidth: '420px', width: '100%', textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
-            <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#FEF2F2', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Trash2 size={24} color="#E63946" /></div>
-            <h3 style={{ fontWeight: 700, fontSize: '1.1rem', color: '#111', marginBottom: '0.5rem' }}>Delete Post?</h3>
-            <p style={{ color: '#6B7280', marginBottom: '1.5rem', fontSize: '0.9rem' }}>"{deleteTarget.title}" will be permanently deleted.</p>
-            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
-              <button onClick={() => setDeleteTarget(null)} style={{ flex: 1, background: 'white', border: '1px solid #ddd', padding: '0.75rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Cancel</button>
-              <button onClick={confirmDelete} style={{ flex: 1, background: '#E63946', color: 'white', border: 'none', padding: '0.75rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 600 }}>Delete</button>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 2000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={e => e.target === e.currentTarget && setDeleteTarget(null)}>
+          <div style={{ background: 'white', borderRadius: '16px', padding: '1.5rem', maxWidth: '420px', width: '100%', textAlign: 'center', boxShadow: '0 20px 60px rgba(0,0,0,0.2)' }}>
+            <div style={{ width: 48, height: 48, borderRadius: '50%', background: '#FEF2F2', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Trash2 size={22} color="#E63946" /></div>
+            <h3 style={{ fontWeight: 700, fontSize: '1rem', color: '#111', marginBottom: '0.5rem' }}>Delete Post?</h3>
+            <p style={{ color: '#6B7280', marginBottom: '1.25rem', fontSize: '0.85rem' }}>"{deleteTarget.title}" will be permanently deleted.</p>
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <button onClick={() => setDeleteTarget(null)} style={{ flex: 1, background: 'white', border: '1px solid #ddd', padding: '0.625rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>Cancel</button>
+              <button onClick={confirmDelete} style={{ flex: 1, background: '#E63946', color: 'white', border: 'none', padding: '0.625rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>Delete</button>
             </div>
           </div>
         </div>
