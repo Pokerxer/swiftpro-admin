@@ -382,55 +382,56 @@ export default function ServicesPage() {
       )}
 
       {/* Header */}
-      <div className="page-header">
-        <div className="title-section">
-          <div className="title-icon">
-            <Wrench size={26} style={{ color: 'white' }} />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingTop: '0.5rem', marginBottom: '2.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ width: 56, height: 56, borderRadius: '16px', background: 'linear-gradient(to bottom right, #0A2463, #3A86FF)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 15px -3px rgba(10, 36, 99, 0.2)' }}>
+              <Wrench size={26} style={{ color: 'white' }} />
+            </div>
+            <div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827' }}>Services</h2>
+              <p style={{ color: '#6B7280', fontSize: '0.875rem', marginTop: '0.125rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 500, color: '#374151' }}>{filteredServices.length}</span>
+                of {services.length} service{services.length !== 1 ? 's' : ''}
+                {search && <span style={{ fontSize: '0.75rem', background: '#F3F4F6', padding: '2px 8px', borderRadius: '9999px' }}>filtered</span>}
+                {filterActive !== null && <span style={{ fontSize: '0.75rem', background: '#EFF6FF', color: '#3A86FF', padding: '2px 8px', borderRadius: '9999px' }}>{filterActive ? 'active' : 'inactive'}</span>}
+              </p>
+            </div>
           </div>
-          <div>
-            <h2>Services</h2>
-            <p className="subtitle">
-              <span style={{ fontWeight: 500, color: '#374151' }}>{filteredServices.length}</span>
-              of {services.length} service{services.length !== 1 ? 's' : ''}
-              {search && <span style={{ fontSize: '0.75rem', background: '#F3F4F6', padding: '2px 8px', borderRadius: '9999px' }}>filtered</span>}
-              {filterActive !== null && <span style={{ fontSize: '0.75rem', background: '#EFF6FF', color: '#3A86FF', padding: '2px 8px', borderRadius: '9999px' }}>{filterActive ? 'active' : 'inactive'}</span>}
-            </p>
-          </div>
-        </div>
-        <div className="actions">
-          <div style={{ position: 'relative' }} className="search-group">
-            <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search services..."
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              style={{ paddingLeft: '2.75rem', paddingRight: '1rem', padding: '0.625rem', border: '1px solid #E5E7EB', borderRadius: '12px', fontSize: '0.875rem', width: '100%', minWidth: '140px', maxWidth: '14rem', background: 'white', outline: 'none', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
-            />
-          </div>
-          <div className="view-toggle" style={{ display: 'flex', background: '#F3F4F6', borderRadius: '12px', padding: '6px', gap: '4px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.06)' }}>
-            {(['grid', 'list'] as const).map(mode => (
-              <button
-                key={mode}
-                onClick={() => setViewMode(mode)}
-                style={{
-                  padding: '10px',
-                  borderRadius: '8px',
-                  transition: 'all 0.2s',
-                  background: viewMode === mode ? 'white' : 'transparent',
-                  color: viewMode === mode ? '#3A86FF' : '#9CA3AF',
-                  boxShadow: viewMode === mode ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                  border: 'none',
-                  cursor: 'pointer'
-                }}
-              >
-                {mode === 'grid' ? <Grid size={18} /> : <List size={18} />}
-              </button>
-            ))}
-          </div>
-          <button onClick={openCreate} className="add-btn" style={{ padding: '0.625rem 1.25rem', background: 'linear-gradient(to right, #0A2463, #3A86FF)', color: 'white', borderRadius: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', transition: 'all 0.2s', border: 'none' }}>
-            <Plus size={18} />
-            <span>Add Service</span>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative' }} className="search-group">
+              <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} className="search-icon" />
+              <input
+                type="text"
+                placeholder="Search services..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                style={{ paddingLeft: '2.75rem', paddingRight: '1rem', padding: '0.625rem', border: '1px solid #E5E7EB', borderRadius: '12px', fontSize: '0.875rem', width: '14rem', background: 'white', outline: 'none', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
+              />
+            </div>
+            <div style={{ display: 'flex', background: '#F3F4F6', borderRadius: '12px', padding: '6px', gap: '4px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.06)' }}>
+              {(['grid', 'list'] as const).map(mode => (
+                <button
+                  key={mode}
+                  onClick={() => setViewMode(mode)}
+                  style={{
+                    padding: '10px',
+                    borderRadius: '8px',
+                    transition: 'all 0.2s',
+                    background: viewMode === mode ? 'white' : 'transparent',
+                    color: viewMode === mode ? '#3A86FF' : '#9CA3AF',
+                    boxShadow: viewMode === mode ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {mode === 'grid' ? <Grid size={18} /> : <List size={18} />}
+                </button>
+              ))}
+            </div>
+            <button onClick={openCreate} style={{ padding: '0.625rem 1.25rem', background: 'linear-gradient(to right, #0A2463, #3A86FF)', color: 'white', borderRadius: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', transition: 'all 0.2s', border: 'none' }} className="add-btn">
+              <Plus size={18} />
+              <span>Add Service</span>
             </button>
           </div>
         </div>
@@ -530,7 +531,7 @@ export default function ServicesPage() {
 
       {/* Grid view */}
       {filteredServices.length > 0 && viewMode === 'grid' && (
-        <div className="services-grid" style={{ paddingTop: '1rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem', paddingTop: '1rem' }}>
           {filteredServices.map((service, index) => {
             const Icon = getIconComponent(service.icon);
             return (
@@ -754,8 +755,8 @@ export default function ServicesPage() {
 
       {/* Form modal */}
       {showForm && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 40, padding: '0' }} onClick={e => { if (e.target === e.currentTarget) closeForm(); }}>
-          <div style={{ background: 'white', borderRadius: '16px 16px 0 0', width: '100%', maxWidth: '48rem', maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', margin: 0 }} className="modal-inner">
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 40, padding: '1rem' }} onClick={e => { if (e.target === e.currentTarget) closeForm(); }}>
+          <div style={{ background: 'white', borderRadius: '16px', width: '100%', maxWidth: '48rem', maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }} className="modal-inner">
             {/* Modal header */}
             <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #F3F4F6', background: 'linear-gradient(to right, #F9FAFB, white)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -773,7 +774,7 @@ export default function ServicesPage() {
             </div>
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #E5E7EB', padding: '0 1rem', background: 'linear-gradient(to bottom, #F9FAFB, #F3F4F6)', flexShrink: 0, overflowX: 'auto' }} className="modal-tabs">
+            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #E5E7EB', padding: '0 1.5rem', background: 'linear-gradient(to bottom, #F9FAFB, #F3F4F6)', flexShrink: 0 }}>
               {(['basic', 'content', 'steps', 'settings'] as const).map(tab => (
                 <button
                   key={tab}
@@ -1227,7 +1228,7 @@ export default function ServicesPage() {
                   {/* Choose Icon */}
                   <div>
                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 700, color: '#374151', marginBottom: '0.75rem' }}>Choose Icon</label>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(52px, 1fr))', gap: '0.5rem' }} className="icon-grid-mobile">
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.625rem' }}>
                       {ICONS.map(({ name, component: Ic }) => (
                         <button
                           key={name}
@@ -1235,8 +1236,8 @@ export default function ServicesPage() {
                           title={name}
                           onClick={() => setFormData(f => ({ ...f, icon: name }))}
                           style={{
-                            padding: '10px',
-                            borderRadius: '10px',
+                            padding: '14px',
+                            borderRadius: '12px',
                             border: formData.icon === name ? '2px solid #3A86FF' : '2px solid #F3F4F6',
                             background: formData.icon === name ? '#EFF6FF' : 'white',
                             display: 'flex',
@@ -1248,7 +1249,7 @@ export default function ServicesPage() {
                             boxShadow: formData.icon === name ? '0 4px 6px -1px rgba(58, 134, 255, 0.2)' : 'none'
                           }}
                         >
-                          <Ic size={20} color={formData.icon === name ? '#3A86FF' : '#6B7280'} />
+                          <Ic size={22} color={formData.icon === name ? '#3A86FF' : '#6B7280'} />
                         </button>
                       ))}
                     </div>
