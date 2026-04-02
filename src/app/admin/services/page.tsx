@@ -406,7 +406,7 @@ export default function ServicesPage() {
                 placeholder="Search services..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                style={{ paddingLeft: '2.75rem', paddingRight: '1rem', padding: '0.625rem', border: '1px solid #E5E7EB', borderRadius: '12px', fontSize: '0.875rem', width: '14rem', background: 'white', outline: 'none', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
+                style={{ paddingLeft: '2.75rem', paddingRight: '1rem', padding: '0.625rem', border: '1px solid #E5E7EB', borderRadius: '12px', fontSize: '0.875rem', width: '100%', minWidth: '140px', maxWidth: '14rem', background: 'white', outline: 'none', transition: 'all 0.2s', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}
               />
             </div>
             <div style={{ display: 'flex', background: '#F3F4F6', borderRadius: '12px', padding: '6px', gap: '4px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.06)' }}>
@@ -755,8 +755,8 @@ export default function ServicesPage() {
 
       {/* Form modal */}
       {showForm && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 40, padding: '1rem' }} onClick={e => { if (e.target === e.currentTarget) closeForm(); }}>
-          <div style={{ background: 'white', borderRadius: '16px', width: '100%', maxWidth: '48rem', maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }} className="modal-inner">
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 40, padding: '0' }} onClick={e => { if (e.target === e.currentTarget) closeForm(); }}>
+          <div style={{ background: 'white', borderRadius: '16px 16px 0 0', width: '100%', maxWidth: '48rem', maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)', margin: 0 }} className="modal-inner">
             {/* Modal header */}
             <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #F3F4F6', background: 'linear-gradient(to right, #F9FAFB, white)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -774,7 +774,7 @@ export default function ServicesPage() {
             </div>
 
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #E5E7EB', padding: '0 1.5rem', background: 'linear-gradient(to bottom, #F9FAFB, #F3F4F6)', flexShrink: 0 }}>
+            <div style={{ display: 'flex', gap: '4px', borderBottom: '1px solid #E5E7EB', padding: '0 1rem', background: 'linear-gradient(to bottom, #F9FAFB, #F3F4F6)', flexShrink: 0, overflowX: 'auto' }} className="modal-tabs">
               {(['basic', 'content', 'steps', 'settings'] as const).map(tab => (
                 <button
                   key={tab}
@@ -1228,7 +1228,7 @@ export default function ServicesPage() {
                   {/* Choose Icon */}
                   <div>
                     <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 700, color: '#374151', marginBottom: '0.75rem' }}>Choose Icon</label>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '0.625rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(52px, 1fr))', gap: '0.5rem' }} className="icon-grid-mobile">
                       {ICONS.map(({ name, component: Ic }) => (
                         <button
                           key={name}
@@ -1236,8 +1236,8 @@ export default function ServicesPage() {
                           title={name}
                           onClick={() => setFormData(f => ({ ...f, icon: name }))}
                           style={{
-                            padding: '14px',
-                            borderRadius: '12px',
+                            padding: '10px',
+                            borderRadius: '10px',
                             border: formData.icon === name ? '2px solid #3A86FF' : '2px solid #F3F4F6',
                             background: formData.icon === name ? '#EFF6FF' : 'white',
                             display: 'flex',
@@ -1249,7 +1249,7 @@ export default function ServicesPage() {
                             boxShadow: formData.icon === name ? '0 4px 6px -1px rgba(58, 134, 255, 0.2)' : 'none'
                           }}
                         >
-                          <Ic size={22} color={formData.icon === name ? '#3A86FF' : '#6B7280'} />
+                          <Ic size={20} color={formData.icon === name ? '#3A86FF' : '#6B7280'} />
                         </button>
                       ))}
                     </div>

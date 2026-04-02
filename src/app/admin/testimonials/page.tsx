@@ -210,8 +210,8 @@ export default function TestimonialsPage() {
       )}
 
       {showForm && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 200, padding: '1rem' }} onClick={e => { if (e.target === e.currentTarget) closeForm(); }}>
-          <div style={{ background: 'white', borderRadius: '18px', width: '100%', maxWidth: '560px', maxHeight: '92vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.18)' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center', zIndex: 200, padding: '0' }} onClick={e => { if (e.target === e.currentTarget) closeForm(); }}>
+          <div style={{ background: 'white', borderRadius: '18px 18px 0 0', width: '100%', maxWidth: '560px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.18)', margin: 0 }}>
             <div style={{ padding: '1.4rem 1.75rem', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
               <div>
                 <h3 style={{ fontWeight: '700', fontSize: '1.15rem', color: '#1c1c1e' }}>{editing ? 'Edit Testimonial' : 'Add Testimonial'}</h3>
@@ -238,7 +238,7 @@ export default function TestimonialsPage() {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.875rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.875rem' }} className="form-row-mobile">
                   <div>
                     <label style={labelStyle}>Name <span style={{ color: '#E63946' }}>*</span></label>
                     <input required value={formData.name} onChange={e => setFormData(f => ({ ...f, name: e.target.value }))} placeholder="John Doe" style={inputStyle} />
@@ -247,7 +247,7 @@ export default function TestimonialsPage() {
                     <label style={labelStyle}>Role <span style={{ color: '#E63946' }}>*</span></label>
                     <input required value={formData.role} onChange={e => setFormData(f => ({ ...f, role: e.target.value }))} placeholder="CEO" style={inputStyle} />
                   </div>
-                  <div>
+                  <div className="mobile-full">
                     <label style={labelStyle}>Company</label>
                     <input value={formData.company} onChange={e => setFormData(f => ({ ...f, company: e.target.value }))} placeholder="Acme Inc." style={inputStyle} />
                   </div>

@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import Link from 'next/link';
-import { LayoutDashboard, FileText, Briefcase, Users, MessageSquare, BarChart3, LogOut, Menu, Wrench, Star, UserCog, Layout, X } from 'lucide-react';
+import { LayoutDashboard, FileText, Briefcase, Users, MessageSquare, BarChart3, LogOut, Menu, Wrench, Star, UserCog, Layout, X, ChevronLeft } from 'lucide-react';
 
 const menuItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -24,11 +24,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { isAuthenticated, user, logout, hydrate } = useAuthStore();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
 
   useEffect(() => {
     hydrate();
     setHydrated(true);
   }, []);
+
+  // Close sidebar on route change (mobile)
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
 
   // Prevent body scroll when mobile sidebar is open
   useEffect(() => {
@@ -41,6 +48,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       document.body.style.overflow = '';
     };
   }, [sidebarOpen]);
+
+  // Handle touch swipe to close
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.touches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (touchStart === null) return;
+    const diff = touchStart - e.touches[0].clientX;
+    if (diff > 50 && sidebarRef.current) {
+      setSidebarOpen(false);
+      setTouchStart(null);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setTouchStart(null);
+  };
 
   useEffect(() => {
     if (hydrated && !isAuthenticated && !pathname.includes('/login')) {
@@ -64,8 +89,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div style={{ display: 'flex', minHeight: '100vh' }}>
       {/* Sidebar */}
       <aside
+        ref={sidebarRef}
         className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}
-        style={{}}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
         {/* Header with Logo + Close Button */}
         <div style={{ padding: '1.5rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -89,7 +117,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               justifyContent: 'center'
             }}
           >
-            <X size={22} />
+            <ChevronLeft size={22} />
           </button>
         </div>
 
@@ -117,7 +145,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 }}
               >
                 <item.icon size={20} />
-                <span className="responsive-hidden-mobile">{item.label}</span>
+                <span>{item.label}</span>
               </Link>
             );
           })}
@@ -154,8 +182,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             }}
           >
             <LogOut size={18} />
-            <span className="responsive-hidden-mobile">Logout</span>
+            <span>Logout</span>
           </button>
+        </div>
+
+        {/* Mobile swipe indicator */}
+        <div className="sidebar-swipe-indicator" style={{ padding: '0.75rem', display: 'flex', justifyContent: 'center', opacity: 0.3 }}>
+          <div style={{ width: 40, height: 4, background: 'rgba(255,255,255,0.5)', borderRadius: 2 }} />
         </div>
       </aside>
 

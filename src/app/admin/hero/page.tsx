@@ -310,8 +310,8 @@ export default function HeroPage() {
 
       {/* Edit / Create Modal */}
       {editing && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={e=>e.target===e.currentTarget&&setEditing(null)}>
-          <div style={{ background:'white', borderRadius:'20px', width:'100%', maxWidth:'900px', maxHeight:'92vh', overflow:'hidden', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,0.3)' }}>
+        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', zIndex:1000, display:'flex', alignItems:'flex-end', justifyContent:'center', padding:'0' }} onClick={e=>e.target===e.currentTarget&&setEditing(null)}>
+          <div style={{ background:'white', borderRadius:'20px 20px 0 0', width:'100%', maxWidth:'900px', maxHeight:'90vh', overflow:'hidden', display:'flex', flexDirection:'column', boxShadow:'0 25px 80px rgba(0,0,0,0.3)', margin:0 }}>
 
             {/* Header + tabs */}
             <div style={{ padding:'1.5rem 1.75rem 0', borderBottom:'1px solid #E5E7EB', background:'#FAFAFA' }}>

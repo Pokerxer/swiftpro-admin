@@ -185,14 +185,14 @@ export default function DashboardPage() {
   return (
     <div>
       {/* Header */}
-      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }} className="page-header">
         <div>
           <h2 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#1c1c1e', marginBottom: '0.5rem' }}>
             Welcome back, {user?.username || 'Admin'}!
           </h2>
           <p style={{ color: '#6B7280' }}>Here's what's happening with your website today.</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }} className="header-actions">
           <Link
             href="/admin/hero"
             style={{
@@ -211,7 +211,8 @@ export default function DashboardPage() {
             }}
           >
             <Palette size={16} />
-            Edit Hero
+            <span className="responsive-hidden-mobile">Edit Hero</span>
+            <span className="mobile-only">Hero</span>
           </Link>
         </div>
       </div>
