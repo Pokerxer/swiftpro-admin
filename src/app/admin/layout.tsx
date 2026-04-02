@@ -50,18 +50,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
-      <aside style={{
-        width: '260px',
-        background: '#0A2463',
-        color: 'white',
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'fixed',
-        height: '100vh',
-        zIndex: 100,
-        transition: 'transform 0.3s ease'
-      }}
-        className={sidebarOpen ? 'sidebar-open' : ''}
+      {/* Sidebar */}
+      <aside
+        className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}
+        style={{}}
       >
         {/* Logo */}
         <div style={{ padding: '1.5rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
@@ -96,7 +88,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 }}
               >
                 <item.icon size={20} />
-                <span>{item.label}</span>
+                <span className="responsive-hidden-mobile">{item.label}</span>
               </Link>
             );
           })}
@@ -133,27 +125,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             }}
           >
             <LogOut size={18} />
-            <span>Logout</span>
+            <span className="responsive-hidden-mobile">Logout</span>
           </button>
         </div>
       </aside>
 
-      <div style={{ flex: 1, marginLeft: '260px', background: '#f5f5f5', minHeight: '100vh' }}>
-        <header style={{
-          background: 'white',
-          padding: '1rem 2.5rem',
-          borderBottom: '1px solid #e5e5e5',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          position: 'sticky',
-          top: 0,
-          zIndex: 50
-        }}>
+      {/* Main content */}
+      <div className="admin-content">
+        <header className="admin-header">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '0.5rem', display: 'none' }}
             className="menu-toggle"
+            style={{ background: 'transparent', border: 'none', cursor: 'pointer', padding: '0.5rem' }}
           >
             <Menu size={22} />
           </button>
@@ -161,32 +144,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {menuItems.find(m => m.href === pathname)?.label || 'Dashboard'}
           </p>
           {user && (
-            <p style={{ fontSize: '0.85rem', color: '#6B7280', margin: 0 }}>
+            <p className="header-user" style={{ fontSize: '0.85rem', color: '#6B7280', margin: 0 }}>
               Signed in as <strong style={{ color: '#111' }}>{user.username}</strong>
               {user.role && <span style={{ marginLeft: '0.5rem', background: user.role === 'admin' ? '#EFF6FF' : '#F3F4F6', color: user.role === 'admin' ? '#3B82F6' : '#6B7280', padding: '3px 10px', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, textTransform: 'capitalize' }}>{user.role}</span>}
             </p>
           )}
         </header>
-        <div style={{ padding: '2.5rem' }}>
+        <div>
           {children}
         </div>
       </div>
 
+      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
+          className="sidebar-overlay"
           onClick={() => setSidebarOpen(false)}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 99 }}
         />
       )}
-
-      <style>{`
-        @media (max-width: 768px) {
-          aside { transform: translateX(-100%); }
-          aside.sidebar-open { transform: translateX(0) !important; }
-          .menu-toggle { display: block !important; }
-          div[style*="marginLeft: 260px"] { margin-left: 0 !important; }
-        }
-      `}</style>
     </div>
   );
 }

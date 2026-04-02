@@ -144,18 +144,18 @@ export default function TestimonialsPage() {
         </div>
       )}
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1c1c1e' }}>Testimonials</h2>
+          <h2 className="page-title" style={{ fontSize: '1.5rem', fontWeight: '700', color: '#1c1c1e' }}>Testimonials</h2>
           <p style={{ color: '#888', fontSize: '0.85rem', marginTop: '2px' }}>{filtered.length} of {testimonials.length} testimonials</p>
         </div>
         <div style={{ display: 'flex', gap: '0.625rem', alignItems: 'center', flexWrap: 'wrap' }}>
           <div style={{ position: 'relative' }}>
             <Search size={16} style={{ position: 'absolute', left: '11px', top: '50%', transform: 'translateY(-50%)', color: '#aaa', pointerEvents: 'none' }} />
-            <input type="text" placeholder="Search…" value={search} onChange={e => setSearch(e.target.value)} style={{ padding: '0.6rem 0.75rem 0.6rem 2.25rem', border: '1.5px solid #e0e0e0', borderRadius: '8px', fontSize: '0.875rem', width: '180px', outline: 'none' }} />
+            <input type="text" placeholder="Search…" value={search} onChange={e => setSearch(e.target.value)} style={{ padding: '0.6rem 0.75rem 0.6rem 2.25rem', border: '1.5px solid #e0e0e0', borderRadius: '8px', fontSize: '0.875rem', minWidth: '140px', width: '180px', outline: 'none' }} />
           </div>
           {/* Star filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', background: '#f8f8f8', borderRadius: '8px', padding: '0.3rem 0.6rem', border: '1.5px solid #e0e0e0' }}>
+          <div className="responsive-hidden-mobile" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', background: '#f8f8f8', borderRadius: '8px', padding: '0.3rem 0.6rem', border: '1.5px solid #e0e0e0' }}>
             <span style={{ fontSize: '0.78rem', color: '#888', fontWeight: '600' }}>Filter:</span>
             {[0, 5, 4, 3, 2, 1].map(r => (
               <button key={r} onClick={() => setFilterRating(filterRating === r ? 0 : r)} style={{ background: filterRating === r ? '#F59E0B' : 'transparent', border: 'none', cursor: 'pointer', padding: '0.25rem 0.4rem', borderRadius: '5px', fontSize: '0.78rem', fontWeight: '600', color: filterRating === r ? 'white' : '#888', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
@@ -163,8 +163,8 @@ export default function TestimonialsPage() {
               </button>
             ))}
           </div>
-          <button onClick={openCreate} style={{ background: BRAND, color: 'white', border: 'none', padding: '0.6rem 1.1rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: '600', fontSize: '0.875rem' }}>
-            <Plus size={17} /> Add Testimonial
+          <button onClick={openCreate} className="btn-responsive" style={{ background: BRAND, color: 'white', border: 'none', padding: '0.6rem 1.1rem', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: '600', fontSize: '0.875rem', whiteSpace: 'nowrap' }}>
+            <Plus size={17} /> <span className="responsive-hidden-mobile">Add Testimonial</span>
           </button>
         </div>
       </div>
@@ -179,7 +179,7 @@ export default function TestimonialsPage() {
       )}
 
       {filtered.length > 0 && (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
+        <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
           {filtered.map((t, idx) => {
             const color = avatarColors[idx % avatarColors.length];
             return (
