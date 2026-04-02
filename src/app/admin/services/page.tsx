@@ -431,12 +431,12 @@ export default function ServicesPage() {
           <button onClick={openCreate} className="add-btn" style={{ padding: '0.625rem 1.25rem', background: 'linear-gradient(to right, #0A2463, #3A86FF)', color: 'white', borderRadius: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', transition: 'all 0.2s', border: 'none' }}>
             <Plus size={18} />
             <span>Add Service</span>
-            </button>
-          </div>
+          </button>
         </div>
+      </div>
 
-        {/* Filters bar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+      {/* Filters bar */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <SortAsc size={16} style={{ color: '#9CA3AF' }} />
             <select
