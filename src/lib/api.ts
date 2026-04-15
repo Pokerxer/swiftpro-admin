@@ -99,4 +99,12 @@ export const analyticsAPI = {
     api.post('/analytics/track/session', { sessionTime, isBounce }),
 };
 
+export const partnersAPI = {
+  getAll: () => api.get('/partners'),
+  getOne: (id: string) => api.get(`/partners/${id}`),
+  create: (data: any) => api.post('/partners', data),
+  update: (id: string, data: any) => api.patch(`/partners/${id}`, data),
+  delete: (id: string) => api.delete(`/partners/${id}`),
+};
+
 export default api;

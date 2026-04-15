@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import Link from 'next/link';
-import { LayoutDashboard, FileText, Briefcase, Users, MessageSquare, BarChart3, LogOut, Menu, Wrench, Star, UserCog, Layout, X, ChevronLeft } from 'lucide-react';
+import { LayoutDashboard, FileText, Briefcase, Users, MessageSquare, BarChart3, LogOut, Menu, Wrench, Star, UserCog, Layout, X, ChevronLeft, Handshake } from 'lucide-react';
 
 const menuItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -14,6 +14,7 @@ const menuItems = [
   { href: '/admin/posts', label: 'Blog Posts', icon: FileText },
   { href: '/admin/team', label: 'Team Members', icon: Users },
   { href: '/admin/testimonials', label: 'Testimonials', icon: Star },
+  { href: '/admin/partners', label: 'Partners', icon: Handshake },
   { href: '/admin/stats', label: 'Stats', icon: BarChart3 },
   { href: '/admin/users', label: 'Users & Roles', icon: UserCog },
 ];
