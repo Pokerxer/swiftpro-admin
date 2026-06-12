@@ -19,6 +19,19 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && typeof window !== 'undefined') {
+      // Token expired or invalid — clear auth and redirect to login
+      localStorage.removeItem('token');
+      localStorage.removeItem('auth_user');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const authAPI = {
   login: (email: string, password: string) =>
     api.post('/auth/login', { email, password }),
@@ -87,6 +100,11 @@ export const usersAPI = {
 export const heroAPI = {
   get: () => api.get('/hero'),
   update: (data: any) => api.put('/hero', data),
+};
+
+export const settingsAPI = {
+  get: () => api.get('/company'),
+  update: (data: any) => api.put('/company', data),
 };
 
 export const analyticsAPI = {
