@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import { partnersAPI } from '@/lib/api';
-import { Plus, Edit, Trash2, X, Users, GripVertical, Eye, EyeOff, ExternalLink } from 'lucide-react';
+import { Plus, Edit, Trash2, X, Users, GripVertical, Eye, EyeOff, ExternalLink, Upload, ImagePlus, Link2 } from 'lucide-react';
 
 const BRAND = '#0A2463';
 
@@ -48,6 +48,8 @@ export default function PartnersPage() {
   const [deleteTarget, setDeleteTarget] = useState<Partner | null>(null);
   const [formData, setFormData] = useState(emptyForm);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isAuthenticated) { router.push('/login'); return; }
@@ -87,6 +89,60 @@ export default function PartnersPage() {
   const closeForm = () => {
     setShowForm(false);
     setEditing(null);
+  };
+
+  const handleLogoFile = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      setToast({ msg: 'Please choose an image file', type: 'error' });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setToast({ msg: 'Image too large (max 5MB)', type: 'error' });
+      return;
+    }
+    setUploading(true);
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          // Resize to a max width of 400px so the stored logo stays small
+          const MAX_W = 400;
+          const scale = Math.min(1, MAX_W / img.width);
+          const w = Math.max(1, Math.round(img.width * scale));
+          const h = Math.max(1, Math.round(img.height * scale));
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          if (!ctx) throw new Error('Canvas not supported');
+          ctx.drawImage(img, 0, 0, w, h);
+          // JPEG for photos (no transparency), PNG otherwise (keeps logo transparency)
+          const useJpeg = file.type === 'image/jpeg' || file.type === 'image/webp';
+          const dataUrl = canvas.toDataURL(useJpeg ? 'image/jpeg' : 'image/png', 0.88);
+          if (dataUrl.length > 1_500_000) {
+            setToast({ msg: 'Image too detailed — please use a simpler logo', type: 'error' });
+            setUploading(false);
+            return;
+          }
+          setFormData(f => ({ ...f, logo: dataUrl }));
+          setUploading(false);
+        } catch {
+          setUploading(false);
+          setToast({ msg: 'Could not process image', type: 'error' });
+        }
+      };
+      img.onerror = () => {
+        setUploading(false);
+        setToast({ msg: 'Could not read image file', type: 'error' });
+      };
+      img.src = reader.result as string;
+    };
+    reader.onerror = () => {
+      setUploading(false);
+      setToast({ msg: 'Could not read file', type: 'error' });
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -156,7 +212,7 @@ export default function PartnersPage() {
           <div>
             <p style={{ fontWeight: 600, color: '#111', margin: '0 0 4px', fontSize: '0.9rem' }}>Trusted By Section</p>
             <p style={{ color: '#6B7280', margin: 0, fontSize: '0.8rem', lineHeight: 1.4 }}>
-              These partners appear in the scrolling logo bar on the homepage. Partners with &quot;Inactive&quot; status will be hidden from the public site.
+              These partners appear in the scrolling logo bar on the homepage. Partners with &quot;Inactive&quot; status will be hidden from the public site. Upload a logo image and it will replace the text name on the site.
             </p>
           </div>
         </div>
@@ -185,8 +241,12 @@ export default function PartnersPage() {
             )}
             {partners.map((p) => (
               <div key={p._id} style={{ background: 'white', borderRadius: '12px', padding: '1rem 1.25rem', display: 'flex', gap: '1rem', alignItems: 'center', boxShadow: '0 1px 3px rgba(0,0,0,0.07)', opacity: p.isActive === false ? 0.6 : 1 }}>
-                <div style={{ width: 48, height: 48, borderRadius: '8px', background: `${p.color || BRAND}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <span style={previewStyle(p)}>{p.name.charAt(0)}</span>
+                <div style={{ width: 48, height: 48, borderRadius: '8px', background: `${p.color || BRAND}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+                  {p.logo ? (
+                    <img src={p.logo} alt={`${p.name} logo`} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', padding: 4, background: '#fff' }} />
+                  ) : (
+                    <span style={previewStyle(p)}>{p.name.charAt(0)}</span>
+                  )}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <p style={{ fontWeight: 700, color: '#111', margin: 0, fontSize: '0.95rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -204,6 +264,11 @@ export default function PartnersPage() {
                     <span style={{ fontSize: '0.78rem', color: '#9CA3AF', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       Order: {p.order}
                     </span>
+                    {p.logo && (
+                      <span style={{ fontSize: '0.78rem', color: '#10B981', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <ImagePlus size={12} /> Logo
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
@@ -232,8 +297,12 @@ export default function PartnersPage() {
               <div style={{ padding: '1.5rem', display: 'grid', gap: '1rem' }}>
                 {/* Preview */}
                 <div style={{ background: '#F9FAFB', borderRadius: '10px', padding: '1rem', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                  <div style={{ width: 48, height: 48, borderRadius: '8px', background: `${formData.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <span style={{ fontSize: '1.5rem', fontWeight: 700, color: formData.color }}>{formData.name ? formData.name.charAt(0) : 'P'}</span>
+                  <div style={{ width: 56, height: 56, borderRadius: '8px', background: '#fff', border: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+                    {formData.logo ? (
+                      <img src={formData.logo} alt={formData.name || 'Partner logo'} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                    ) : (
+                      <span style={{ fontSize: '1.5rem', fontWeight: 700, color: formData.color }}>{formData.name ? formData.name.charAt(0) : 'P'}</span>
+                    )}
                   </div>
                   <div>
                     <p style={{ fontWeight: 700, fontSize: '1.1rem', color: formData.color, margin: 0 }}>{formData.name || 'Partner Name'}</p>
@@ -245,6 +314,42 @@ export default function PartnersPage() {
                 <div>
                   <label style={labelStyle}>Partner Name *</label>
                   <input value={formData.name} onChange={e => setFormData(f => ({ ...f, name: e.target.value }))} required placeholder="e.g. First Bank of Nigeria" style={inputStyle} />
+                </div>
+
+                {/* Logo Image */}
+                <div>
+                  <label style={labelStyle}>Partner Logo</label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (file) handleLogoFile(file);
+                      e.target.value = '';
+                    }}
+                  />
+                  {formData.logo ? (
+                    <div style={{ background: '#F9FAFB', border: '1px solid #e5e7eb', borderRadius: '10px', padding: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <img src={formData.logo} alt="Logo preview" style={{ width: 56, height: 56, objectFit: 'contain', background: '#fff', borderRadius: '6px', border: '1px solid #e5e7eb', flexShrink: 0 }} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: 600, color: '#111' }}>Logo ready</p>
+                        <p style={{ margin: 0, fontSize: '0.72rem', color: '#6B7280' }}>Auto-resized for the homepage logo bar</p>
+                      </div>
+                      <button type="button" onClick={() => setFormData(f => ({ ...f, logo: '' }))} style={{ background: '#FEF2F2', border: 'none', color: '#E63946', cursor: 'pointer', padding: '0.5rem', borderRadius: '6px', display: 'flex', alignItems: 'center' }} title="Remove image"><Trash2 size={15} /></button>
+                    </div>
+                  ) : (
+                    <button type="button" onClick={() => fileInputRef.current?.click()} disabled={uploading} style={{ width: '100%', background: '#F9FAFB', border: '1.5px dashed #CBD5E1', borderRadius: '10px', padding: '1.25rem', cursor: uploading ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', color: '#64748B', transition: 'all 0.2s' }}>
+                      <ImagePlus size={22} style={{ color: BRAND }} />
+                      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#374151' }}>{uploading ? 'Processing image...' : 'Upload logo image'}</span>
+                      <span style={{ fontSize: '0.72rem', color: '#9CA3AF' }}>PNG, JPG or WebP — max 5MB</span>
+                    </button>
+                  )}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.6rem' }}>
+                    <Link2 size={14} style={{ color: '#9CA3AF', flexShrink: 0 }} />
+                    <input value={formData.logo.startsWith('data:') ? '' : formData.logo} onChange={e => setFormData(f => ({ ...f, logo: e.target.value }))} placeholder="...or paste an image URL" style={{ ...inputStyle, fontSize: '0.82rem' }} />
+                  </div>
                 </div>
 
                 {/* Color */}

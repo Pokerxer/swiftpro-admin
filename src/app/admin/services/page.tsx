@@ -13,6 +13,7 @@ import {
 
 interface ProcessStep {
   title: string;
+  
   description: string;
 }
 
@@ -20,6 +21,7 @@ interface Service {
   _id: string;
   title: string;
   slug: string;
+  category: 'infrastructure' | 'development' | 'security' | 'consulting';
   shortDescription: string;
   fullDescription: string;
   description: string;
@@ -36,6 +38,7 @@ interface Service {
 interface FormData {
   title: string;
   slug: string;
+  category: 'infrastructure' | 'development' | 'security' | 'consulting';
   shortDescription: string;
   fullDescription: string;
   icon: string;
@@ -94,6 +97,7 @@ function getIconComponent(name: string) {
 const emptyForm: FormData = {
   title: '',
   slug: '',
+  category: 'development',
   shortDescription: '',
   fullDescription: '',
   icon: 'Server',
@@ -165,6 +169,7 @@ export default function ServicesPage() {
     setFormData({
       title: service.title,
       slug: service.slug || slugify(service.title),
+      category: (service as any).category || 'development',
       shortDescription: service.shortDescription || '',
       fullDescription: service.fullDescription || service.description || '',
       icon: service.icon || 'Server',
@@ -201,8 +206,9 @@ export default function ServicesPage() {
       }
       closeForm();
       fetchServices();
-    } catch {
-      showToast('Failed to save service', 'error');
+    } catch (err: any) {
+      const msg = err?.response?.data?.error || err?.message || 'Failed to save service';
+      showToast(msg, 'error');
     } finally {
       setSaving(false);
     }
@@ -214,8 +220,9 @@ export default function ServicesPage() {
       showToast('Service deleted', 'success');
       setDeleteConfirm(null);
       fetchServices();
-    } catch {
-      showToast('Failed to delete service', 'error');
+    } catch (err: any) {
+      const msg = err?.response?.data?.error || err?.message || 'Failed to delete service';
+      showToast(msg, 'error');
     }
   };
 
@@ -224,8 +231,9 @@ export default function ServicesPage() {
       await servicesAPI.update(service._id, { isActive: !service.isActive });
       showToast(`Service ${service.isActive === false ? 'activated' : 'deactivated'}`, 'success');
       fetchServices();
-    } catch {
-      showToast('Failed to update service status', 'error');
+    } catch (err: any) {
+      const msg = err?.response?.data?.error || err?.message || 'Failed to update status';
+      showToast(msg, 'error');
     }
   };
 
@@ -234,8 +242,9 @@ export default function ServicesPage() {
       await servicesAPI.update(service._id, { isFeatured: !service.isFeatured });
       showToast(`Service ${service.isFeatured ? 'unfeatured' : 'featured'}`, 'success');
       fetchServices();
-    } catch {
-      showToast('Failed to update featured status', 'error');
+    } catch (err: any) {
+      const msg = err?.response?.data?.error || err?.message || 'Failed to update featured status';
+      showToast(msg, 'error');
     }
   };
 
@@ -578,6 +587,11 @@ export default function ServicesPage() {
                     {(service.shortDescription || service.description || '').length > 120 ? '...' : ''}
                   </p>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', alignItems: 'center', paddingTop: '1rem', borderTop: '1px solid #F3F4F6' }}>
+                    {service.category && (
+                      <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '6px 12px', background: '#F0FDF4', color: '#16A34A', borderRadius: '9999px', textTransform: 'capitalize' }}>
+                        {service.category}
+                      </span>
+                    )}
                     {service.pricing && (
                       <span style={{ fontSize: '0.75rem', fontWeight: 600, padding: '6px 12px', background: '#ECFDF5', color: '#059669', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <span style={{ fontWeight: 700 }}>$</span>{service.pricing}
@@ -1223,6 +1237,25 @@ export default function ServicesPage() {
                         onBlur={e => { e.target.style.borderColor = '#E5E7EB'; e.target.style.boxShadow = 'none'; e.target.style.background = '#F9FAFB'; }}
                       />
                     </div>
+                  </div>
+
+                  {/* Category */}
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 700, color: '#374151', marginBottom: '0.5rem' }}>
+                      Category <span style={{ color: '#EF4444' }}>*</span>
+                    </label>
+                    <select
+                      value={formData.category}
+                      onChange={e => setFormData(f => ({ ...f, category: e.target.value as FormData['category'] }))}
+                      style={{ width: '100%', padding: '0.875rem 1rem', border: '1px solid #E5E7EB', borderRadius: '12px', fontSize: '0.875rem', background: '#F9FAFB', outline: 'none', transition: 'all 0.2s', cursor: 'pointer' }}
+                      onFocus={e => { e.target.style.borderColor = '#3A86FF'; e.target.style.boxShadow = '0 0 0 3px rgba(58, 134, 255, 0.1)'; e.target.style.background = 'white'; }}
+                      onBlur={e => { e.target.style.borderColor = '#E5E7EB'; e.target.style.boxShadow = 'none'; e.target.style.background = '#F9FAFB'; }}
+                    >
+                      <option value="infrastructure">Infrastructure</option>
+                      <option value="development">Development</option>
+                      <option value="security">Security</option>
+                      <option value="consulting">Consulting</option>
+                    </select>
                   </div>
 
                   {/* Choose Icon */}
